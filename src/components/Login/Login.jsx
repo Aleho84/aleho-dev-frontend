@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
 
 function Login({ setIsLoggedIn }) {
-    const [username, setUsername] = useState('');
+    const [email, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ function Login({ setIsLoggedIn }) {
         setError(null); // Limpiar cualquier error anterior
 
         try {
-            const token = await login(username, password);
+            const token = await login(email, password);
             setIsLoggedIn(true); // Actualizar el estado de autenticación en App.jsx
             navigate('/'); // Redirigir al dashboard después de iniciar sesión
         } catch (error) {
@@ -36,7 +36,7 @@ function Login({ setIsLoggedIn }) {
                         <input
                             type="text"
                             id="username"
-                            value={username}
+                            value={email}
                             onChange={(e) => setUsername(e.target.value)}
                             required
                             className={styles.input}

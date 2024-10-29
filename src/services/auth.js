@@ -3,10 +3,10 @@ import axios from 'axios';
 
 const API_URL = 'https://aleho.sytes.net/api/users/login';
 
-export async function login(username, password) {
+export async function login(email, password) {
     try {
-        console.log('Enviando solicitud de inicio de sesión:', { username, password }); // Registro de datos enviados
-        const response = await axios.post(API_URL, { username, password, });
+        console.log('Enviando solicitud de inicio de sesión:', { email, password }); // Registro de datos enviados
+        const response = await axios.post(API_URL, { email, password, });
 
         console.log('Respuesta de la API:', response); // Registro de la respuesta completa
         const token = response.data.token;
