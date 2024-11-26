@@ -1,7 +1,7 @@
 // src/services/auth.js
 import axios from 'axios';
 
-const API_URL = 'https://aleho.sytes.net/api/users/login';
+const API_URL = 'http://localhost:9002/api/v1/users/login';
 
 export async function login(email, password) {
     try {
