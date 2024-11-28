@@ -1,11 +1,11 @@
 'use client';
 
-// components/Login.jsx
+// components/main/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Servicios
-import { login } from '../services/auth';
+import { login } from '../../services/auth';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Expresión regular simple para validar email
                  

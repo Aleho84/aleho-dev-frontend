@@ -1,27 +1,17 @@
 'use client';
 
-// components/Dashboard.jsx
+// components/main/Dashboard.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Servicios
-import lucideIcon from '../services/lucideIcon.js';
-import { logoff } from '../services/auth';
+import { logoff } from '../../services/auth.js';
 
 // Components
-import CardStatusEmpty from './CardStatusEmpty.jsx';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import CardStatus from '../child/CardStatus.jsx';
+import CardStatusEmpty from '../child/CardStatusEmpty.jsx';
 import { Button } from '@/components/ui/button';
-import {
-  AlertCircle,
-  CheckCircle,
-  RefreshCw,
-  XCircle,
-  MessageSquare,
-  LogOut,
-  Menu,
-} from 'lucide-react';
-
+import { RefreshCw, MessageSquare, LogOut, Menu } from 'lucide-react';
 
 // Mock server data
 const dataServerStatusMock = [
@@ -66,20 +56,6 @@ export default function Dashboard({ setIsLoggedIn }) {
     }
   };
 
-  const getStatusIcon = (status) => {
-    const iconSize = 'h-6 w-6';
-    switch (status) {
-      case 'online':
-        return <CheckCircle className={`${iconSize} text-green-500`} />;
-      case 'offline':
-        return <XCircle className={`${iconSize} text-red-500`} />;
-      case 'warning':
-        return <AlertCircle className={`${iconSize} text-yellow-500`} />;
-      default:
-        return null;
-    }
-  };
-
   const handleChatRedirect = () => {
     navigate('/chatpanel');
   };
@@ -92,10 +68,6 @@ export default function Dashboard({ setIsLoggedIn }) {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const enviarMensaje = () => {
-    alert('¡Ay, papi! Me enviaste un mensaje... 🥵'); 
   };
 
   return (
@@ -161,7 +133,6 @@ export default function Dashboard({ setIsLoggedIn }) {
               <RefreshCw className="mr-2 h-4 w-4" />
               Refresh
             </Button>
-            <Botoncito texto="Enviame un mensajito" onClick={enviarMensaje} />
           </div>
           {error && (
             <div
@@ -173,74 +144,11 @@ export default function Dashboard({ setIsLoggedIn }) {
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {loading
-              ? Array(6)
+              ? Array(dataServerStatusMock.length)
                   .fill(0)
-                  .map((_, index) => (
-                    <Card
-                      key={index}
-                      className="bg-[#161b22] border-[#30363d] animate-pulse"
-                    >
-                      <CardHeader>
-                        <div className="h-5 bg-[#30363d] rounded w-3/4"></div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="h-6 bg-[#30363d] rounded mb-2"></div>
-                        <div className="h-6 bg-[#30363d] rounded w-1/2"></div>
-                      </CardContent>
-                    </Card>
-                  ))
+                  .map((_, index) => <CardStatusEmpty index={index} />)
               : serverStatuses.map((server) => {
-                  const IconComponent = lucideIcon(server.icon);
-                  return (
-                    <Card
-                      key={server.id}
-                      className="bg-[#161b22] border-[#30363d]"
-                    >
-                      <CardHeader>
-                        <CardTitle className="text-lg font-medium text-white">
-                          {server.name}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center space-x-4 mb-4">
-                          <div className="bg-[#30363d] p-2 rounded-full">
-                            <IconComponent className="h-6 w-6 text-[#58a6ff]" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-[#58a6ff]">
-                              {server.service}
-                            </p>
-                            <p className="text-xs text-[#8b949e]">
-                              ID: {server.id}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            {getStatusIcon(server.status)}
-                            <span
-                              className={`capitalize text-sm ${
-                                server.status === 'online'
-                                  ? 'text-green-500'
-                                  : server.status === 'offline'
-                                  ? 'text-red-500'
-                                  : 'text-yellow-500'
-                              }`}
-                            >
-                              {server.status}
-                            </span>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-[#58a6ff] hover:bg-[#30363d]"
-                          >
-                            View Details
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
+                  return <CardStatus server={server} />;
                 })}
           </div>
         </div>

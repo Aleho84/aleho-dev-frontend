@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 // Componentes
-import Login from './components/Login';
-import Dashboard from './components/Dashboard';
-import Chatpanel from './components/Chatpanel';
+import Login from './components/main/Login';
+import Dashboard from './components/main/Dashboard';
+import Chatpanel from './components/main/Chatpanel';
 
 // Servicios
 import { isAuthenticated } from './services/auth';
