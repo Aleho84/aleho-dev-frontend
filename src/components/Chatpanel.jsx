@@ -1,14 +1,31 @@
 'use client';
 
+// components/Chatpanel.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Send, Plus, Settings, MessageSquare, ArrowLeft } from 'lucide-react';
+
+// Components
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Send, Plus, Settings, MessageSquare, ArrowLeft } from 'lucide-react';
 
-export default function ChatbotFrontend() {
+
+// Mock server data
+const dataChatMock = [
+  { id: 1, text: 'Hola! soy un bot, en que puedo ayudarte?', sender: 'bot' },
+  { id: 2, text: 'Hola! Soy Alejo, cual es tu nombre?', sender: 'user' },
+  { id: 3, text: 'Que pingo te importa. Gil!', sender: 'bot' },  
+];
+
+// Mock API call to fetch server statuses
+const fetchChatMock = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 1000)); // Simula un delay para simular un llamado real de API
+  return chatData;
+};
+
+export default function Chatbotpanel() {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const navigate = useNavigate();
@@ -66,6 +83,10 @@ export default function ChatbotFrontend() {
 
   const handleDashboardRedirect = () => {
     navigate('/');
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (

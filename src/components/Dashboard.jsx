@@ -1,8 +1,15 @@
 'use client';
 
+// components/Dashboard.jsx
 import { useState, useEffect } from 'react';
-import { logoff } from '../../services/auth';
 import { useNavigate } from 'react-router-dom';
+
+// Servicios
+import lucideIcon from '../services/lucideIcon.js';
+import { logoff } from '../services/auth';
+
+// Components
+import CardStatusEmpty from './CardStatusEmpty.jsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,50 +17,47 @@ import {
   CheckCircle,
   RefreshCw,
   XCircle,
-  Globe,
-  Database,
-  Code,
-  Zap,
-  BarChart,
-  HardDrive,
   MessageSquare,
   LogOut,
+  Menu,
 } from 'lucide-react';
 
+
 // Mock server data
-const servers = [
-  { id: 1, name: 'Main Web Server', service: 'Apache', icon: Globe },
-  { id: 2, name: 'Primary Database', service: 'PostgreSQL', icon: Database },
-  { id: 3, name: 'API Gateway', service: 'Express.js', icon: Code },
-  { id: 4, name: 'Redis Cache', service: 'Redis', icon: Zap },
-  { id: 5, name: 'Load Balancer', service: 'NGINX', icon: BarChart },
-  { id: 6, name: 'Backup Storage', service: 'AWS S3', icon: HardDrive },
+const dataServerStatusMock = [
+  { id: 1, name: 'Aleho-Server', service: 'Windows Server', icon: 'Server' },
+  { id: 2, name: 'Aleho-Ubuntu', service: 'Linux Server', icon: 'Server' },
+  { id: 3, name: 'Alehoberry', service: 'Raspberry', icon: 'Cherry' },
+  { id: 4, name: 'Alehoberry4', service: 'Raspberry', icon: 'Cherry' },
 ];
 
 // Mock API call to fetch server statuses
-const fetchServerStatuses = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const statuses = servers.map((server) => ({
-        ...server,
-        status: ['online', 'offline', 'warning'][Math.floor(Math.random() * 3)],
-      }));
-      resolve(statuses);
-    }, 1500);
-  });
+const fetchServerStatusMock = async () => {
+  const statuses = dataServerStatusMock.map((server) => ({
+    ...server,
+    status: ['online', 'offline', 'warning'][Math.floor(Math.random() * 3)],
+  }));
+
+  await new Promise((resolve) => setTimeout(resolve, 1000)); // Simula un delay para simular un llamado real de API
+  return statuses;
 };
 
-export default function ServerStatusDashboard() {
+export default function Dashboard({ setIsLoggedIn }) {
   const [serverStatuses, setServerStatuses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchStatuses();
+  }, []);
 
   const fetchStatuses = async () => {
     setLoading(true);
     setError(null);
     try {
-      const statuses = await fetchServerStatuses();
+      const statuses = await fetchServerStatusMock();
       setServerStatuses(statuses);
     } catch (err) {
       setError('Failed to fetch server statuses');
@@ -62,18 +66,15 @@ export default function ServerStatusDashboard() {
     }
   };
 
-  useEffect(() => {
-    fetchStatuses();
-  }, []);
-
   const getStatusIcon = (status) => {
+    const iconSize = 'h-6 w-6';
     switch (status) {
       case 'online':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className={`${iconSize} text-green-500`} />;
       case 'offline':
-        return <XCircle className="h-5 w-5 text-red-500" />;
+        return <XCircle className={`${iconSize} text-red-500`} />;
       case 'warning':
-        return <AlertCircle className="h-5 w-5 text-yellow-500" />;
+        return <AlertCircle className={`${iconSize} text-yellow-500`} />;
       default:
         return null;
     }
@@ -85,17 +86,44 @@ export default function ServerStatusDashboard() {
 
   const handleLogOff = () => {
     logoff();
+    setIsLoggedIn(false); // Actualizar el estado de autenticación en App.jsx
     navigate('/login');
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const enviarMensaje = () => {
+    alert('¡Ay, papi! Me enviaste un mensaje... 🥵'); 
+  };
+
   return (
-    <div className="flex min-h-screen bg-[#0d1117] text-[#c9d1d9]">
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#0d1117] text-[#c9d1d9]">
+      {/* Mobile menu button */}
+      <button
+        className="md:hidden p-4 text-white"
+        onClick={toggleMobileMenu}
+        aria-label="Toggle menu"
+      >
+        <Menu className="h-6 w-6" />
+      </button>
+
       {/* Sidebar */}
-      <aside className="w-64 bg-[#161b22] border-r border-[#30363d] p-4 flex flex-col">
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-white">Dashboard Menu</h2>
-          <div className="mt-2 h-1 w-10 bg-[#58a6ff]"></div>
+      <aside
+        className={`w-full md:w-64 bg-[#161b22] border-r border-[#30363d] p-4 flex flex-col ${
+          isMobileMenuOpen ? 'block' : 'hidden'
+        } md:block transition-all duration-300 ease-in-out`}
+      >
+        <div className="flex items-center justify-center mb-6">
+          <img
+            src="/logo.jpg"
+            alt="Logo"
+            className="mx-auto mb-6 h-14 w-14 rounded-full"
+          />
+          <h2 className="text-xl font-semibold text-white">Aleho-Dev Panel</h2>
         </div>
+        <div className="mt-2 h-1 bg-[#638cbb] mb-6"></div>
         <nav className="space-y-2 flex-grow">
           <Button
             variant="ghost"
@@ -107,6 +135,7 @@ export default function ServerStatusDashboard() {
           </Button>
           {/* Add more navigation items here if needed */}
         </nav>
+
         <Button
           variant="ghost"
           className="w-full justify-start text-[#c9d1d9] hover:bg-[#30363d] mt-auto"
@@ -132,6 +161,7 @@ export default function ServerStatusDashboard() {
               <RefreshCw className="mr-2 h-4 w-4" />
               Refresh
             </Button>
+            <Botoncito texto="Enviame un mensajito" onClick={enviarMensaje} />
           </div>
           {error && (
             <div
@@ -160,7 +190,7 @@ export default function ServerStatusDashboard() {
                     </Card>
                   ))
               : serverStatuses.map((server) => {
-                  const IconComponent = server.icon;
+                  const IconComponent = lucideIcon(server.icon);
                   return (
                     <Card
                       key={server.id}
@@ -188,7 +218,15 @@ export default function ServerStatusDashboard() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
                             {getStatusIcon(server.status)}
-                            <span className="capitalize text-sm">
+                            <span
+                              className={`capitalize text-sm ${
+                                server.status === 'online'
+                                  ? 'text-green-500'
+                                  : server.status === 'offline'
+                                  ? 'text-red-500'
+                                  : 'text-yellow-500'
+                              }`}
+                            >
                               {server.status}
                             </span>
                           </div>
