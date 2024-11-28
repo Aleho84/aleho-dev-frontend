@@ -3,9 +3,9 @@
 // components/main/CardStatusEmpty.jsx
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
-export default function CardStatusEmpty({ index }) {
+export default function CardStatusEmpty() {
   return (
-    <Card key={index} className="bg-[#161b22] border-[#30363d] animate-pulse">
+    <Card className="bg-[#161b22] border-[#30363d] animate-pulse">
       <CardHeader>
         <div className="h-5 bg-[#30363d] rounded w-3/4"></div>
       </CardHeader>
