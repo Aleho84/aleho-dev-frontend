@@ -1,6 +1,6 @@
 // App.jsx
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Componentes
 import Login from './components/main/Login';
@@ -19,14 +19,20 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route path="/" element={ isLoggedIn ? <Dashboard setIsLoggedIn={setIsLoggedIn} /> : <Navigate to="/login" /> }/>
-        <Route path="/login" element={ isLoggedIn ? <Navigate to="/" /> : <Login setIsLoggedIn={setIsLoggedIn} /> } />
-        <Route path="/chatpanel" element={isLoggedIn ? <Chatpanel /> : <Navigate to="/login" />} />
+        <Route path="/login" element={<Login setIsAuthenticated={setIsLoggedIn} />} />
+        <Route 
+          path="/" 
+          element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/chatpanel" 
+          element={isLoggedIn ? <Chatpanel /> : <Navigate to="/login" />} 
+        />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
-}
+};
 
 export default App;
