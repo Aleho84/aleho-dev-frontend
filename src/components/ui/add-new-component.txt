@@ -1,0 +1,3 @@
+npx shadcn@latest add <name of component>
+
+https://www.radix-ui.com/themes/docs/components/alert-dialog
