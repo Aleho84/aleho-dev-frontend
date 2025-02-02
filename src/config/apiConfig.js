@@ -1,0 +1,2 @@
+export const VITE__BACKEND_URL = import.meta.env.VITE__BACKEND_URL || 'http://localhost:3000/api/v1';
+export const VITE__RASPBERRY_API_URL = import.meta.env.VITE__RASPBERRY_API_URL || 'http://localhost:5000/api';
