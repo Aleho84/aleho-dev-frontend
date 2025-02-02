@@ -37,7 +37,15 @@ export default function Dashboard({ setIsLoggedIn }) {
       setServerStatuses(statuses);
       setServerInfo(serverInfo);
     } catch (err) {
-      setError(err.message);
+      if (err.message.includes('Failed to fetch')) {
+        setError(
+          'Error de conexión con el servidor. Inténtalo de nuevo más tarde.'
+        );
+      } else if (err.message.includes('NetworkError')) {
+        setError('Error de red. Verifica tu conexión a Internet.');
+      } else {
+        setError('Error inesperado. Por favor, inténtalo de nuevo.');
+      }
     } finally {
       setLoading(false);
     }
@@ -146,7 +154,7 @@ export default function Dashboard({ setIsLoggedIn }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {loading ? (
               <CardStatusEmpty />
-            ) : (
+            ) : error ? null : (
               <ServerInfoCard serverInfo={serverInfo} />
             )}
             {loading
@@ -158,6 +166,8 @@ export default function Dashboard({ setIsLoggedIn }) {
                     />
                   );
                 })
+              : error
+              ? null
               : serverStatuses.map((server) => {
                   return (
                     <CardStatus key={`server-${server.id}`} server={server} />
