@@ -1,8 +1,11 @@
+const userToken = await localStorage.getItem('token');
+
 const VITE__BACKEND_URL = import.meta.env.VITE__BACKEND_URL || 'http://localhost:9002/api/v1/users';
 const VITE_DEBUG = import.meta.env.VITE_DEBUG || false;
 const HEADER = {
     'User-Agent': 'aleho-dev-frontend',
     'Content-Type': 'application/json',
+    "Authorization": `Bearer ${userToken}`,
 };
 
 const dataServerStatusMock = [
