@@ -15,6 +15,7 @@ import {
     MemoryStickIcon,
     Clock,
     Cpu,
+    Bot,    
 } from 'lucide-react';
 
 const icons = {
@@ -32,6 +33,7 @@ const icons = {
     MemoryStickIcon,
     Clock,
     Cpu,
+    Bot,    
 };
 
 function lucideIcon(iconName) {

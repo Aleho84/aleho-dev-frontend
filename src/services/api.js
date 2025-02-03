@@ -9,11 +9,31 @@ const HEADER = {
 };
 
 const dataServerStatusMock = [
-    { id: 1, name: 'Aleho-Server', service: 'Windows Server', icon: 'Server' },
-    { id: 2, name: 'Aleho-Ubuntu', service: 'Linux Server', icon: 'Server' },
-    { id: 3, name: 'Alehoberry', service: 'Raspberry', icon: 'Cherry' },
-    { id: 4, name: 'Alehoberry4', service: 'Raspberry', icon: 'Cherry' },
+    { id: 1, name: 'Ubuntu Server', service: 'SSH', icon: 'Code', ip: '192.168.0.3', port: 22 },
+    { id: 2, name: 'Ubuntu Server', service: 'Mongo DB', icon: 'Database', ip: '192.168.0.3', port: 27017 },
+    { id: 3, name: 'Aleho-Bot', service: 'Node App', icon: 'Bot', ip: '192.168.0.3', port: 3000 },
+    { id: 4, name: 'RPI-Control', service: 'Node App', icon: 'Cherry', ip: '192.168.0.11', port: 5000 },
 ];
+
+async function fetchServiceStatus(ip, port) {
+    try {
+        const response = await fetch(VITE__BACKEND_URL + '/server/isOnline', {
+            method: 'POST',
+            headers: HEADER,
+            body: JSON.stringify({ ip, port }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error al obtener datos del servicio: ${ip}:${port}`);
+        }
+
+        const data = await response.json();
+        return data.message;
+    } catch (error) {
+        console.error(`Error al verificar el servicio ${ip}:${port}:`, error);
+        return 'offline';
+    }
+};
 
 export async function getServerInfo() {
     try {
@@ -39,36 +59,33 @@ export async function getServerInfo() {
 
 export async function getServerStatus() {
     try {
-        if (VITE_DEBUG === true) { console.log('Obteniendo datos de los servicios del servidor.') };
+        if (VITE_DEBUG === true) {
+            console.log('Obteniendo datos de los servicios del servidor.');
+        }
 
-        const statuses = dataServerStatusMock.map((server) => ({
-            ...server,
-            status: ['online', 'offline', 'warning'][Math.floor(Math.random() * 3)],
+        const statuses = await Promise.all(dataServerStatusMock.map(async (server) => {
+            try {
+                const status = await fetchServiceStatus(server.ip, server.port);
+                return {
+                    ...server,
+                    status: status,
+                };
+            } catch (error) {
+                console.error(`Error al procesar el servidor ${server.name}:`, error);
+                return {
+                    ...server,
+                    status: 'offline', // Manejo de error individual
+                };
+            }
         }));
 
-        if (VITE_DEBUG === true) { console.log('Respuesta de la API [MOK]:', statuses) };
+        if (VITE_DEBUG === true) {
+            console.log('Respuesta de la API:', statuses);
+        }
 
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simula un delay para simular un llamado real de API
         return statuses;
     } catch (error) {
-        console.error('Error al obtener datos del servidor:', error);
-        throw error;
-    }
-}
-
-export async function getUsers() {
-    try {
-        if (VITE_DEBUG === true) { console.log('Obteniendo datos del Servidor (MOCK):') };
-
-        const statuses = dataServerStatusMock.map((server) => ({
-            ...server,
-            status: ['online', 'offline', 'warning'][Math.floor(Math.random() * 3)],
-        }));
-
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simula un delay para simular un llamado real de API
-        return statuses;
-    } catch (error) {
-        console.error('Error al obtener datos del servidor:', error.message);
+        console.error('Error general al obtener datos del servidor:', error);
         throw error;
     }
 }
