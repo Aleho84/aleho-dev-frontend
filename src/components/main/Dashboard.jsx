@@ -92,20 +92,9 @@ export default function Dashboard({ setIsLoggedIn }) {
             ) : (
               <ServerInfoCard serverInfo={serverInfo} />
             )}
-            {loading
-              ? serverStatuses.map((server) => {
-                  return (
-                    <CardStatusEmpty
-                      key={`loading-${server.id}`}
-                      server={server}
-                    />
-                  );
-                })
-              : serverStatuses.map((server) => {
-                  return (
-                    <CardStatus key={`server-${server.id}`} server={server} />
-                  );
-                })}
+            {serverStatuses.map((server) => {
+              return <CardStatus key={`server-${server.id}`} server={server} />;
+            })}
           </div>
         </div>
       </main>
