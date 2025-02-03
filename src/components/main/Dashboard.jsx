@@ -2,18 +2,17 @@
 
 // components/main/Dashboard.jsx
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 // Servicios
-import { logoff, getUserData } from '../../services/auth.js';
+import { getUserData } from '../../services/auth.js';
 import { getServerInfo, getServerStatus } from '../../services/api.js';
 
 // Components
+import Sidebar from '../child/Sidebar.jsx';
 import CardStatus from '../child/CardStatus.jsx';
 import CardStatusEmpty from '../child/CardStatusEmpty.jsx';
 import ServerInfoCard from '../child/ServerInfoCard.jsx';
-import { Button } from '@/components/ui/button';
-import { RefreshCw, MessageSquare, LogOut, Menu, Users } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 export default function Dashboard({ setIsLoggedIn }) {
   const [serverStatuses, setServerStatuses] = useState([]);
@@ -21,20 +20,18 @@ export default function Dashboard({ setIsLoggedIn }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [userData, setUserData] = useState(getUserData());
-  const navigate = useNavigate();
+  const [userData, setUserData] = useState([]);
 
   useEffect(() => {
+    setUserData(getUserData); // Obtener los datos del usuario
     const intervalId = setInterval(fetchStatuses, 5000); // Llamar a fetchStatuses cada 5 segundos (5000 milisegundos)
     return () => clearInterval(intervalId); // Limpiar el intervalo cuando el componente se desmonta
   }, []);
 
-  const fetchStatuses = async () => {    
+  const fetchStatuses = async () => {
     try {
-      const statuses = await getServerStatus();
-      const serverInfo = await getServerInfo();
-      setServerStatuses(statuses);
-      setServerInfo(serverInfo);
+      setServerStatuses(await getServerStatus());
+      setServerInfo(await getServerInfo());
       setLoading(false);
       setError(null);
     } catch (err) {
@@ -48,20 +45,6 @@ export default function Dashboard({ setIsLoggedIn }) {
         setError('Error inesperado. Por favor, inténtalo de nuevo.');
       }
     }
-  };
-
-  const handleChatRedirect = () => {
-    navigate('/chatpanel');
-  };
-
-  const handleUserMngRedirect = () => {
-    navigate('/userpanel');
-  };
-
-  const handleLogOff = () => {
-    logoff();
-    setIsLoggedIn(false); // Actualizar el estado de autenticación en App.jsx
-    navigate('/login');
   };
 
   const toggleMobileMenu = () => {
@@ -80,52 +63,12 @@ export default function Dashboard({ setIsLoggedIn }) {
       </button>
 
       {/* Sidebar */}
-      <aside
-        className={`w-full md:w-64 bg-[#161b22] border-r border-[#30363d] p-4 flex flex-col ${
-          isMobileMenuOpen ? 'block' : 'hidden'
-        } md:block transition-all duration-300 ease-in-out`}
-      >
-        <div className="flex items-center mb-6">
-          <img
-            src={userData.image}
-            alt="Logo"
-            className="h-14 w-14 rounded-full"
-          />
-          <h2 className="text-xl font-semibold text-white text-xl ml-4">
-            {userData.name}
-          </h2>
-        </div>
-        <div className="mt-2 h-1 bg-[#638cbb] mb-6"></div>
-        <nav className="space-y-2 flex-grow">
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-[#c9d1d9] hover:bg-[#30363d]"
-            onClick={handleUserMngRedirect}
-          >
-            {' '}
-            <Users className="mr-2 h-5 w-5" />
-            Usuarios
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-[#c9d1d9] hover:bg-[#30363d]"
-            onClick={handleChatRedirect}
-          >
-            {' '}
-            <MessageSquare className="mr-2 h-5 w-5" />
-            Chat
-          </Button>
-          {/* Add more navigation items here if needed */}
-        </nav>
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-[#c9d1d9] hover:bg-[#30363d] mt-auto"
-          onClick={handleLogOff}
-        >
-          <LogOut className="mr-2 h-5 w-5" />
-          Log Off
-        </Button>
-      </aside>
+      <Sidebar
+        isMobileMenuOpen={isMobileMenuOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+        userData={userData}
+        setIsLoggedIn={setIsLoggedIn} // Pasamos setIsLoggedIn como prop!
+      />
 
       {/* Main content */}
       <main className="flex-1 overflow-auto">
