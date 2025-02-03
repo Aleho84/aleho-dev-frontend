@@ -24,6 +24,7 @@ export default function Dashboard({ setIsLoggedIn }) {
 
   useEffect(() => {
     setUserData(getUserData); // Obtener los datos del usuario
+    fetchStatuses(); // Llamar a fetchStatuses una vez al cargar el componente
     const intervalId = setInterval(fetchStatuses, 5000); // Llamar a fetchStatuses cada 5 segundos (5000 milisegundos)
     return () => clearInterval(intervalId); // Limpiar el intervalo cuando el componente se desmonta
   }, []);
