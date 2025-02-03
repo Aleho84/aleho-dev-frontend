@@ -21,11 +21,9 @@ async function fetchServiceStatus(ip, port) {
             method: 'POST',
             headers: HEADER,
             body: JSON.stringify({ ip, port }),
-        });
+        });        
 
-        if (!response.ok) {
-            throw new Error(`Error al obtener datos del servicio: ${ip}:${port}`);
-        }
+        if (!response.ok) { throw new Error(`Error al obtener datos del servicio: ${ip}:${port}`) };
 
         const data = await response.json();
         return data.message;
@@ -37,14 +35,12 @@ async function fetchServiceStatus(ip, port) {
 
 export async function getServerInfo() {
     try {
-        if (VITE_DEBUG === true) { console.log('Obteniendo datos del Servidor:') };
-
         const response = await fetch(VITE__BACKEND_URL + '/server/systemInfo', {
             method: 'GET',
             headers: HEADER,
         });
 
-        if (VITE_DEBUG === true) { console.log('Respuesta de la API:', response) };
+        if (VITE_DEBUG === 'true') { console.log('Respuesta de /server/systemInfo:', response) };
 
         if (!response.ok) { throw new Error(`Error al obtener datos del servidor: ${response.status}`) };
 
@@ -59,10 +55,6 @@ export async function getServerInfo() {
 
 export async function getServerStatus() {
     try {
-        if (VITE_DEBUG === true) {
-            console.log('Obteniendo datos de los servicios del servidor.');
-        }
-
         const statuses = await Promise.all(dataServerStatusMock.map(async (server) => {
             try {
                 const status = await fetchServiceStatus(server.ip, server.port);
@@ -78,10 +70,6 @@ export async function getServerStatus() {
                 };
             }
         }));
-
-        if (VITE_DEBUG === true) {
-            console.log('Respuesta de la API:', statuses);
-        }
 
         return statuses;
     } catch (error) {

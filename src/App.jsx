@@ -24,7 +24,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated());
 
   useEffect(() => {
-    if (VITE_DEBUG === true) {
+    if (VITE_DEBUG === 'true') {
       console.log(`isAutenticated: ${isAuthenticated()}`);
     }
     setIsLoggedIn(isAuthenticated()); // Verificar el estado de autenticación al cargar la aplicación

@@ -8,7 +8,7 @@ const HEADER = {
 
 export async function login(email, password) {
     try {
-        if (VITE_DEBUG === true) { console.log('Enviando solicitud de inicio de sesión:', { email, password }) };
+        if (VITE_DEBUG === 'true') { console.log('Enviando solicitud de inicio de sesión:', { email, password }) };
 
         const response = await fetch(REACT_APP_BACKEND_URL + '/users/login', {
             method: 'POST',
@@ -16,12 +16,12 @@ export async function login(email, password) {
             body: JSON.stringify({ email, password }),
         });
 
-        if (VITE_DEBUG === true) { console.log('Respuesta de la API:', response) };
+        if (VITE_DEBUG === 'true') { console.log('Respuesta de /users/login:', response) };
 
         if (!response.ok) { throw new Error(`Error en la solicitud de inicio de sesión: ${response.status}`) };
 
         const data = await response.json();
-        
+
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
 
