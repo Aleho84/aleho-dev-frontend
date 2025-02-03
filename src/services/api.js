@@ -1,12 +1,5 @@
-const userToken = await localStorage.getItem('token');
-
 const VITE__BACKEND_URL = import.meta.env.VITE__BACKEND_URL || 'http://localhost:9002/api/v1/users';
 const VITE_DEBUG = import.meta.env.VITE_DEBUG || false;
-const HEADER = {
-    'User-Agent': 'aleho-dev-frontend',
-    'Content-Type': 'application/json',
-    "Authorization": `Bearer ${userToken}`,
-};
 
 const dataServerStatusMock = [
     { id: 1, name: 'Ubuntu Server', service: 'SSH', icon: 'Code', ip: '192.168.0.3', port: 22 },
@@ -17,11 +10,16 @@ const dataServerStatusMock = [
 
 async function fetchServiceStatus(ip, port) {
     try {
+        const userToken = localStorage.getItem('token');
         const response = await fetch(VITE__BACKEND_URL + '/server/isOnline', {
             method: 'POST',
-            headers: HEADER,
+            headers: {
+                'User-Agent': 'aleho-dev-frontend',
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${userToken}`,
+            },
             body: JSON.stringify({ ip, port }),
-        });        
+        });
 
         if (!response.ok) { throw new Error(`Error al obtener datos del servicio: ${ip}:${port}`) };
 
@@ -35,9 +33,14 @@ async function fetchServiceStatus(ip, port) {
 
 export async function getServerInfo() {
     try {
+        const userToken = localStorage.getItem('token');
         const response = await fetch(VITE__BACKEND_URL + '/server/systemInfo', {
             method: 'GET',
-            headers: HEADER,
+            headers: {
+                'User-Agent': 'aleho-dev-frontend',
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${userToken}`,
+            },
         });
 
         if (VITE_DEBUG === 'true') { console.log('Respuesta de /server/systemInfo:', response) };
