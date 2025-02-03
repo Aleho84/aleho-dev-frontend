@@ -25,17 +25,18 @@ export default function Dashboard({ setIsLoggedIn }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchStatuses();
+    const intervalId = setInterval(fetchStatuses, 5000); // Llamar a fetchStatuses cada 5 segundos (5000 milisegundos)
+    return () => clearInterval(intervalId); // Limpiar el intervalo cuando el componente se desmonta
   }, []);
 
-  const fetchStatuses = async () => {
-    setLoading(true);
-    setError(null);
+  const fetchStatuses = async () => {    
     try {
       const statuses = await getServerStatus();
       const serverInfo = await getServerInfo();
       setServerStatuses(statuses);
       setServerInfo(serverInfo);
+      setLoading(false);
+      setError(null);
     } catch (err) {
       if (err.message.includes('Failed to fetch')) {
         setError(
@@ -46,8 +47,6 @@ export default function Dashboard({ setIsLoggedIn }) {
       } else {
         setError('Error inesperado. Por favor, inténtalo de nuevo.');
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -135,13 +134,6 @@ export default function Dashboard({ setIsLoggedIn }) {
             <h1 className="text-2xl font-semibold text-white">
               Server Status Dashboard
             </h1>
-            <Button
-              onClick={fetchStatuses}
-              disabled={loading}
-              className="bg-[#238636] hover:bg-[#2ea043] text-white"
-            >
-              Refresh
-            </Button>
           </div>
           {error && (
             <div
@@ -154,7 +146,7 @@ export default function Dashboard({ setIsLoggedIn }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {loading ? (
               <CardStatusEmpty />
-            ) : error ? null : (
+            ) : (
               <ServerInfoCard serverInfo={serverInfo} />
             )}
             {loading
@@ -166,8 +158,6 @@ export default function Dashboard({ setIsLoggedIn }) {
                     />
                   );
                 })
-              : error
-              ? null
               : serverStatuses.map((server) => {
                   return (
                     <CardStatus key={`server-${server.id}`} server={server} />
