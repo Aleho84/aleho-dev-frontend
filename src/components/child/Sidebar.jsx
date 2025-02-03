@@ -10,8 +10,7 @@ import { Button } from '@/components/ui/button';
 import { LogOut, MessageSquare, Users } from 'lucide-react';
 
 export default function Sidebar({
-  isMobileMenuOpen,
-  setIsMobileMenuOpen,
+  isMobileMenuOpen,  
   userData,
   setIsLoggedIn,
 }) {
