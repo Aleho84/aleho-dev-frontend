@@ -1,4 +1,5 @@
-const VITE__BACKEND_URL = import.meta.env.VITE__BACKEND_URL || 'http://localhost:9002/api/v1/users';
+const VITE__BACKEND_URL = import.meta.env.VITE__BACKEND_URL || 'http://localhost:3000/api/v1/users';
+const VITE__RASPBERRY_API_URL = import.meta.env.VITE__RASPBERRY_API_URL || 'http://localhost:5000/api';
 const VITE_DEBUG = import.meta.env.VITE_DEBUG || false;
 
 const dataServerStatusMock = [
@@ -43,12 +44,10 @@ export async function getServerInfo() {
             },
         });
 
-        if (VITE_DEBUG === 'true') { console.log('Respuesta de /server/systemInfo:', response) };
-
         if (!response.ok) { throw new Error(`Error al obtener datos del servidor: ${response.status}`) };
 
         const data = await response.json();
-
+        if (VITE_DEBUG === 'true') { console.log('Respuesta de /server/systemInfo:', data) };
         return data;
     } catch (error) {
         console.error('Error al obtener datos del servidor:', error);
@@ -78,5 +77,25 @@ export async function getServerStatus() {
     } catch (error) {
         console.error('Error general al obtener datos del servidor:', error);
         throw error;
+    }
+}
+
+export async function fetchGPIOStatus() {
+    try {
+        const response = await fetch(VITE__RASPBERRY_API_URL + '/gpio_status');
+
+        if (!response.ok) { throw new Error(`Error al obtener el estado de los GPIO: ${response.status}`) };
+
+        const data = await response.json();
+        if (VITE_DEBUG === 'true') { console.log('Respuesta de /api/gpio_status:', data) };
+        return data.pinValues;
+    } catch (error) {
+        console.error('Error al obtener el estado de los GPIO:', error);
+        return {
+            pin36: 0,
+            pin37: 0,
+            pin38: 0,
+            pin40: 0,
+        };
     }
 }

@@ -5,18 +5,29 @@ import { useState, useEffect } from 'react';
 
 // Servicios
 import { getUserData } from '../../services/auth.js';
-import { getServerInfo, getServerStatus } from '../../services/api.js';
+import {
+  getServerInfo,
+  getServerStatus,
+  fetchGPIOStatus,
+} from '../../services/api.js';
 
 // Components
 import Sidebar from '../child/Sidebar.jsx';
 import CardStatus from '../child/CardStatus.jsx';
 import CardStatusEmpty from '../child/CardStatusEmpty.jsx';
 import ServerInfoCard from '../child/ServerInfoCard.jsx';
+import LEDDisplay from '../child/LEDDisplay.jsx';
 import { Menu } from 'lucide-react';
 
 export default function Dashboard({ setIsLoggedIn }) {
   const [serverStatuses, setServerStatuses] = useState([]);
   const [serverInfo, setServerInfo] = useState([]);
+  const [pinValues, setPinValues] = useState({
+    pin36: 0,
+    pin37: 0,
+    pin38: 0,
+    pin40: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -33,6 +44,7 @@ export default function Dashboard({ setIsLoggedIn }) {
     try {
       setServerStatuses(await getServerStatus());
       setServerInfo(await getServerInfo());
+      setPinValues(await fetchGPIOStatus());
       setLoading(false);
       setError(null);
     } catch (err) {
@@ -96,6 +108,7 @@ export default function Dashboard({ setIsLoggedIn }) {
             {serverStatuses.map((server) => {
               return <CardStatus key={`server-${server.id}`} server={server} />;
             })}
+            <LEDDisplay pinValues={pinValues} />
           </div>
         </div>
       </main>
