@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-const LEDDisplay = ({ pinValues }) => {
+export default function LEDDisplay({ pinValues }) {
   const red = pinValues?.pin40 === 1;
   const yellow = pinValues?.pin38 === 1;
   const green = pinValues?.pin36 === 1;
@@ -21,7 +21,7 @@ const LEDDisplay = ({ pinValues }) => {
       </CardContent>
     </Card>
   );
-};
+}
 
 const LED = ({ color, isOn }) => {
   const ledStyle = {
@@ -33,5 +33,3 @@ const LED = ({ color, isOn }) => {
 
   return <div style={ledStyle} />;
 };
-
-export default LEDDisplay;

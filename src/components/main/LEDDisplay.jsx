@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchGPIOStatus } from '../../services/api';
 
-const LEDDisplay = () => {
+export default function LEDDisplay() {
   const [pinValues, setPinValues] = useState({
     pin36: 0,
     pin37: 0,
@@ -58,7 +58,7 @@ const LEDDisplay = () => {
       </div>
     </div>
   );
-};
+}
 
 const LED = ({ color, isOn }) => {
   const ledStyle = {
@@ -71,5 +71,3 @@ const LED = ({ color, isOn }) => {
 
   return <div style={ledStyle}></div>;
 };
-
-export default LEDDisplay;
