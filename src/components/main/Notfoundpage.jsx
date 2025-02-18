@@ -1,6 +1,6 @@
 'use client';
 
-// components/main/Errorpage.jsx
+// components/main/Notfoundpage.jsx
 import { useNavigate } from 'react-router-dom';
 
 // Components

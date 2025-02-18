@@ -1,6 +1,6 @@
 'use client';
 
-// components/child/CardStatus.jsx
+// components/child/ServerInfoCard.jsx
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import lucideIcon from '../../services/lucideIcon.js';
 

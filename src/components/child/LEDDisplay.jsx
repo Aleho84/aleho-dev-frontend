@@ -1,3 +1,6 @@
+'use client';
+
+// components/child/LEDDisplay.jsx
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function LEDDisplay({ pinValues }) {

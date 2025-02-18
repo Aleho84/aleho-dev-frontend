@@ -1,3 +1,5 @@
+'use client';
+
 // components/main/Sidebar.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
