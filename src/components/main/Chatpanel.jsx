@@ -11,12 +11,11 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Send, Plus, Settings, MessageSquare, ArrowLeft } from 'lucide-react';
 
-
 // Mock server data
 const dataChatMock = [
   { id: 1, text: 'Hola! soy un bot, en que puedo ayudarte?', sender: 'bot' },
   { id: 2, text: 'Hola! Soy Alejo, cual es tu nombre?', sender: 'user' },
-  { id: 3, text: 'Que pingo te importa. Gil!', sender: 'bot' },  
+  { id: 3, text: 'Que pingo te importa. Gil!', sender: 'bot' },
 ];
 
 // Mock API call to fetch server statuses
@@ -29,6 +28,7 @@ export default function Chatbotpanel() {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const navigate = useNavigate();
+  const [isSidebarFull, setIsSidebarFull] = useState(true);
 
   useEffect(() => {
     fetchInitialMessage();
@@ -89,48 +89,55 @@ export default function Chatbotpanel() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarFull(!isSidebarFull);
+  };
+
   return (
     <div className="flex h-screen bg-[#0d1117]">
       {/* Sidebar */}
-      <div className="w-64 bg-[#161b22] border-r border-[#30363d]">
-        <div className="p-4">
+      <div
+        className={`bg-[#161b22] border-r border-[#30363d] transition-all duration-300 ${
+          isSidebarFull ? 'w-64' : 'w-16'
+        }`}
+      >
+        <div className="p-4 flex flex-col space-y-2">
           <Button
-            // onClick={() => window.history.back()}
+            variant="ghost"
+            className={`text-[#c9d1d9] hover:bg-[#30363d] ${
+              isSidebarFull ? 'w-full justify-start' : 'w-8 h-8 p-0'
+            }`}
             onClick={handleDashboardRedirect}
-            className="w-full justify-start text-[#c9d1d9] bg-[#21262d] hover:bg-[#30363d] border-[#30363d] mb-2"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver
-            <span className="sr-only">a la página anterior</span>
+            <ArrowLeft className="h-5 w-5" />
+            {isSidebarFull && <span className="ml-2">Regresar</span>}
           </Button>
-          <Button className="w-full justify-start text-[#c9d1d9] bg-[#21262d] hover:bg-[#30363d] border-[#30363d]">
-            <Plus className="mr-2 h-4 w-4" /> Nueva conversación
+          <Button
+            variant="ghost" 
+            className={`text-[#c9d1d9] hover:bg-[#30363d] ${
+              isSidebarFull ? 'w-full justify-start' : 'w-8 h-8 p-0'
+            }`}
+          >
+            <Plus className="h-5 w-5" />
+            {isSidebarFull && <span className="ml-2">Nuevo chat</span>}
           </Button>
         </div>
-        <ScrollArea className="h-[calc(100vh-80px)]">
-          <div className="p-2 space-y-2">
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-[#c9d1d9] hover:bg-[#30363d]"
-            >
-              <MessageSquare className="mr-2 h-4 w-4" /> Conversación 1
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-[#c9d1d9] hover:bg-[#30363d]"
-            >
-              <MessageSquare className="mr-2 h-4 w-4" /> Conversación 2
-            </Button>
-          </div>
-        </ScrollArea>
-        <div className="absolute bottom-4 left-4">
+
+        <div className="absolute bottom-4 left-4 flex flex-col items-center">
           <Button
             variant="ghost"
             size="icon"
             className="text-[#c9d1d9] hover:bg-[#30363d]"
+            onClick={toggleSidebar}
           >
-            <Settings className="h-5 w-5" />
-            <span className="sr-only">Configuración</span>
+            {isSidebarFull ? (
+              <ArrowLeft className="h-5 w-5" />
+            ) : (
+              <Plus className="h-5 w-5" />
+            )}
+            <span className="sr-only">
+              {isSidebarFull ? 'Contraer' : 'Expandir'}
+            </span>
           </Button>
         </div>
       </div>
