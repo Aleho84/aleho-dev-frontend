@@ -17,12 +17,17 @@ import Notfoundpage from './components/main/Notfoundpage';
 import LoadingSpinner from './components/child/LoadingSpinner';
 
 // Servicios
-import { isAuthenticated } from './services/auth';
+import { isAuthenticated, getUserData } from './services/auth';
 
 // Context
 import { LoadingProvider, useLoading } from './context/LoadingContext';
 
 const VITE_DEBUG = import.meta.env.VITE_DEBUG || false;
+
+const isUserAdmin = () => {
+  const user = getUserData();
+  return user?.account?.admin;
+};
 
 function AppContent() {
   const { isLoading } = useLoading();
@@ -61,7 +66,7 @@ function AppContent() {
         />
         <Route
           path="/userpanel"
-          element={isLoggedIn ? <Userpanel /> : <Navigate to="/login" />}
+          element={isLoggedIn && isUserAdmin() ? <Userpanel /> : <Navigate to="/" />}
         />
         <Route
           path="/chatpanel"

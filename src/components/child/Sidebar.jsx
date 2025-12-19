@@ -63,8 +63,9 @@ export default function Sidebar({
         </Button>
         <Button
           variant="ghost"
-          className="w-full justify-start text-[#c9d1d9] hover:bg-[#30363d]"
-          onClick={handleUserMngRedirect}
+          className={`w-full justify-start text-[#c9d1d9] hover:bg-[#30363d] ${!userData?.account?.admin ? 'opacity-50 cursor-not-allowed' : ''}`}
+          onClick={userData?.account?.admin ? handleUserMngRedirect : null}
+          disabled={!userData?.account?.admin}
         >
           {' '}
           <Users className="mr-2 h-5 w-5" />
