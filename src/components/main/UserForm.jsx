@@ -106,7 +106,7 @@ export function UserForm({ user, onSubmit, isSubmitting }) {
         <form onSubmit={handleSubmit} className="space-y-6 p-1">
             <div className="space-y-4">
                 <div>
-                    <Label htmlFor="name" className="text-muted-foreground">
+                    <Label htmlFor="name" className="block text-white text-sm font-medium mb-2">
                         Name
                     </Label>
                     <Input
@@ -114,11 +114,11 @@ export function UserForm({ user, onSubmit, isSubmitting }) {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        className="bg-secondary/50 border-input text-foreground focus:border-ring"
+                        className="w-full px-3 py-2 border border-gray-700 rounded-md text-white bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
                 <div>
-                    <Label htmlFor="email" className="text-muted-foreground">
+                    <Label htmlFor="email" className="block text-white text-sm font-medium mb-2">
                         Email
                     </Label>
                     <Input
@@ -127,11 +127,11 @@ export function UserForm({ user, onSubmit, isSubmitting }) {
                         type="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="bg-secondary/50 border-input text-foreground focus:border-ring"
+                        className="w-full px-3 py-2 border border-gray-700 rounded-md text-white bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
                 <div>
-                    <Label htmlFor="password" className="text-muted-foreground">
+                    <Label htmlFor="password" className="block text-white text-sm font-medium mb-2">
                         Password
                     </Label>
                     <Input
@@ -140,12 +140,12 @@ export function UserForm({ user, onSubmit, isSubmitting }) {
                         type="password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="bg-secondary/50 border-input text-foreground focus:border-ring"
+                        className="w-full px-3 py-2 border border-gray-700 rounded-md text-white bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder={user ? 'Leave blank to keep current password' : ''}
                     />
                 </div>
                 <div>
-                    <Label htmlFor="image" className="text-muted-foreground">
+                    <Label htmlFor="image" className="block text-white text-sm font-medium mb-2">
                         Image URL
                     </Label>
                     <Input
@@ -153,7 +153,7 @@ export function UserForm({ user, onSubmit, isSubmitting }) {
                         name="image"
                         value={formData.image}
                         onChange={handleChange}
-                        className="bg-secondary/50 border-input text-foreground focus:border-ring"
+                        className="w-full px-3 py-2 border border-gray-700 rounded-md text-white bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
             </div>
@@ -172,7 +172,7 @@ export function UserForm({ user, onSubmit, isSubmitting }) {
                             }
                             className="bg-secondary border-input"
                         />
-                        <Label htmlFor="confirmed" className="text-muted-foreground">
+                        <Label htmlFor="confirmed" className="block text-white text-sm font-medium mb-2">
                             Confirmed
                         </Label>
                     </div>
@@ -188,13 +188,13 @@ export function UserForm({ user, onSubmit, isSubmitting }) {
                             }
                             className="bg-secondary border-input"
                         />
-                        <Label htmlFor="admin" className="text-muted-foreground">
+                        <Label htmlFor="admin" className="block text-white text-sm font-medium mb-2">
                             Admin
                         </Label>
                     </div>
                 </div>
                 <div>
-                    <Label htmlFor="code" className="text-muted-foreground">
+                    <Label htmlFor="code" className="block text-white text-sm font-medium mb-2">
                         Code
                     </Label>
                     <Input
@@ -202,11 +202,11 @@ export function UserForm({ user, onSubmit, isSubmitting }) {
                         name="code"
                         value={formData.account.code}
                         onChange={handleAccountChange}
-                        className="bg-secondary/50 border-input text-foreground focus:border-ring"
+                        className="w-full px-3 py-2 border border-gray-700 rounded-md text-white bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
                 <div>
-                    <Label htmlFor="dateCodeExpire" className="text-muted-foreground">
+                    <Label htmlFor="dateCodeExpire" className="block text-white text-sm font-medium mb-2">
                         Date Code Expire
                     </Label>
                     <Input
@@ -215,15 +215,14 @@ export function UserForm({ user, onSubmit, isSubmitting }) {
                         type="datetime-local"
                         value={formData.account.dateCodeExpire.slice(0, 16)}
                         onChange={handleAccountChange}
-                        className="bg-secondary/50 border-input text-foreground focus:border-ring"
+                        className="w-full px-3 py-2 border border-gray-700 rounded-md text-white bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
             </div>
 
             <Button
                 type="submit"
-                variant="ghost"
-                className="w-full hover:bg-accent text-foreground"
+                className="bg-[#238636] hover:bg-[#2ea043] text-white w-full font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline"
                 disabled={isSubmitting}
             >
                 {isSubmitting ? 'Saving...' : 'Save'}
