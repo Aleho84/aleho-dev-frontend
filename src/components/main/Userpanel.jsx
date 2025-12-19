@@ -13,7 +13,7 @@ import { getUserData } from '../../services/auth';
 
 // Components
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 import {
   Table,
   TableBody,
@@ -32,7 +32,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Plus, Menu } from 'lucide-react';
+import { Plus, Pencil, Trash2, Menu, Users } from 'lucide-react';
 
 import Sidebar from '../child/Sidebar';
 import { UserCard } from './UserCard';
@@ -132,171 +132,172 @@ export default function UserManagement() {
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
         userData={userData}
-        setIsLoggedIn={() => { }} // UserPanel doesn't control login state directly, but Sidebar expects it. Passing dummy or we can accept it as prop if needed.
+        setIsLoggedIn={() => { }}
       />
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto">
-        <div className="container mx-auto p-4">
-          <Card className="w-full max-w-6xl mx-auto bg-[#161b22] border-[#30363d] text-[#c9d1d9]">
-            <CardHeader className="flex flex-row items-center justify-between border-b border-[#30363d]">
-              <CardTitle className="text-white">User Management</CardTitle>
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="hover:bg-[#30363d] text-[#c9d1d9]"
-                    onClick={() => {
-                      setCurrentUser(null);
-                      setError('');
-                    }}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add User
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-3xl bg-[#161b22] text-[#c9d1d9] border-[#30363d] sm:max-w-[600px]">
-                  <DialogHeader>
-                    <DialogTitle className="text-white">
-                      {currentUser ? 'Edit User' : 'Add New User'}
-                    </DialogTitle>
-                  </DialogHeader>
-                  <ScrollArea className="max-h-[80vh]">
-                    <UserForm
-                      user={currentUser}
-                      onSubmit={currentUser ? handleUpdateUser : handleAddUser}
-                      isSubmitting={isSubmitting}
-                    />
-                  </ScrollArea>
-                </DialogContent>
-              </Dialog>
-            </CardHeader>
-            <CardContent className="pt-6">
-              {isLoading ? (
-                <div className="space-y-4">
-                  {[1, 2, 3].map((i) => (
-                    <Skeleton key={i} className="h-20 w-full bg-[#30363d]" />
-                  ))}
-                </div>
-              ) : (
-                <>
-                  {/* Desktop view */}
-                  <div className="hidden md:block">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="hover:bg-[#21262d] border-b border-[#30363d]">
-                          <TableHead className="text-sm font-medium text-[#8b949e]">
-                            Name
-                          </TableHead>
-                          <TableHead className="text-sm font-medium text-[#8b949e]">
-                            Email
-                          </TableHead>
-                          <TableHead className="text-sm font-medium text-[#8b949e]">
-                            Status
-                          </TableHead>
-                          <TableHead className="text-sm font-medium text-[#8b949e]">
-                            Code
-                          </TableHead>
-                          <TableHead className="text-sm font-medium text-[#8b949e]">
-                            Expires
-                          </TableHead>
-                          <TableHead className="text-sm font-medium text-[#8b949e]">
-                            Actions
-                          </TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {users.map((user) => (
-                          <TableRow
-                            key={user._id}
-                            className="hover:bg-[#21262d] border-b border-[#30363d]"
-                          >
-                            <TableCell className="font-medium text-[#c9d1d9]">
-                              {user.name}
-                            </TableCell>
-                            <TableCell className="text-[#8b949e]">
-                              {user.email}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex gap-2">
-                                {user.account.admin && (
-                                  <Badge
-                                    variant="secondary"
-                                    className="bg-blue-900 text-blue-200 border-0"
-                                  >
-                                    Admin
-                                  </Badge>
-                                )}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="bg-[#161b22] border-b border-[#30363d] p-4 flex justify-between items-center shadow-sm">
+          <div className="flex items-center">
+            <Users className="h-6 w-6 mr-2 text-[#c9d1d9]" />
+            <h1 className="text-xl font-semibold text-white">User Management</h1>
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                variant="ghost"
+                className="hover:bg-[#30363d] text-[#c9d1d9]"
+                onClick={() => {
+                  setCurrentUser(null);
+                  setError('');
+                }}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add User
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-3xl bg-[#161b22] text-[#c9d1d9] border-[#30363d] sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle className="text-white">
+                  {currentUser ? 'Edit User' : 'Add New User'}
+                </DialogTitle>
+              </DialogHeader>
+              <ScrollArea className="max-h-[80vh]">
+                <UserForm
+                  user={currentUser}
+                  onSubmit={currentUser ? handleUpdateUser : handleAddUser}
+                  isSubmitting={isSubmitting}
+                />
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
+        </header>
+
+        <main className="flex-1 overflow-auto p-6">
+          <div className="bg-[#161b22] rounded-lg shadow-sm border border-[#30363d]">
+            {isLoading ? (
+              <div className="space-y-4 p-4">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-20 w-full bg-[#30363d]" />
+                ))}
+              </div>
+            ) : (
+              <>
+                {/* Desktop view */}
+                <div className="hidden md:block">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="hover:bg-[#21262d] border-b border-[#30363d]">
+                        <TableHead className="text-sm font-medium text-[#8b949e]">
+                          Name
+                        </TableHead>
+                        <TableHead className="text-sm font-medium text-[#8b949e]">
+                          Email
+                        </TableHead>
+                        <TableHead className="text-sm font-medium text-[#8b949e]">
+                          Status
+                        </TableHead>
+                        <TableHead className="text-sm font-medium text-[#8b949e]">
+                          Code
+                        </TableHead>
+                        <TableHead className="text-sm font-medium text-[#8b949e]">
+                          Expires
+                        </TableHead>
+                        <TableHead className="text-sm font-medium text-[#8b949e]">
+                          Actions
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {users.map((user) => (
+                        <TableRow
+                          key={user._id}
+                          className="hover:bg-[#21262d] border-b border-[#30363d]"
+                        >
+                          <TableCell className="font-medium text-[#c9d1d9]">
+                            {user.name}
+                          </TableCell>
+                          <TableCell className="text-[#8b949e]">
+                            {user.email}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              {user.account.admin && (
                                 <Badge
                                   variant="secondary"
-                                  className={`border-0 ${user.account.confirmed
-                                      ? 'bg-green-900 text-green-200'
-                                      : 'bg-yellow-900 text-yellow-200'
-                                    }`}
+                                  className="bg-blue-900 text-blue-200 border-0"
                                 >
-                                  {user.account.confirmed ? 'Confirmed' : 'Pending'}
+                                  Admin
                                 </Badge>
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-[#8b949e] font-mono">
-                              {user.account.code}
-                            </TableCell>
-                            <TableCell className="text-[#8b949e]">
-                              {new Date(
-                                user.account.dateCodeExpire
-                              ).toLocaleString()}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="hover:bg-[#30363d] text-[#c9d1d9]"
-                                  onClick={() => {
-                                    setCurrentUser(user);
-                                    setIsDialogOpen(true);
-                                    setError('');
-                                  }}
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  variant="destructive"
-                                  size="sm"
-                                  className="hover:bg-red-900"
-                                  onClick={() => handleDeleteUser(user._id)}
-                                  disabled={isDeletingId === user._id}
-                                >
-                                  {isDeletingId === user._id ? 'Deleting...' : 'Delete'}
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
+                              )}
+                              <Badge
+                                variant="secondary"
+                                className={`border-0 ${user.account.confirmed
+                                  ? 'bg-green-900 text-green-200'
+                                  : 'bg-yellow-900 text-yellow-200'
+                                  }`}
+                              >
+                                {user.account.confirmed ? 'Confirmed' : 'Pending'}
+                              </Badge>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-[#8b949e] font-mono">
+                            {user.account.code}
+                          </TableCell>
+                          <TableCell className="text-[#8b949e]">
+                            {new Date(
+                              user.account.dateCodeExpire
+                            ).toLocaleString()}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="hover:bg-[#30363d] text-[#8b949e] hover:text-[#58a6ff]"
+                                onClick={() => {
+                                  setCurrentUser(user);
+                                  setIsDialogOpen(true);
+                                  setError('');
+                                }}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="hover:bg-[#30363d] text-[#8b949e] hover:text-[#f85149]"
+                                onClick={() => handleDeleteUser(user._id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
 
-                  {/* Mobile view */}
-                  <div className="md:hidden space-y-4">
-                    {users.map((user) => (
-                      <UserCard
-                        key={user._id}
-                        user={user}
-                        onEdit={(u) => {
-                          setCurrentUser(u);
-                          setIsDialogOpen(true);
-                          setError('');
-                        }}
-                        onDelete={handleDeleteUser}
-                        isDeleting={isDeletingId === user._id}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
+                {/* Mobile view */}
+                <div className="md:hidden space-y-4 p-4">
+                  {users.map((user) => (
+                    <UserCard
+                      key={user._id}
+                      user={user}
+                      onEdit={(u) => {
+                        setCurrentUser(u);
+                        setIsDialogOpen(true);
+                        setError('');
+                      }}
+                      onDelete={handleDeleteUser}
+                      isDeleting={isDeletingId === user._id}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
           {error && (
             <div
               className="bg-[#3c1e1e] border border-[#f85149] text-[#f85149] px-4 py-3 rounded-md mb-4 mt-4 max-w-6xl mx-auto"
@@ -305,8 +306,8 @@ export default function UserManagement() {
               <span className="block sm:inline">{error}</span>
             </div>
           )}
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

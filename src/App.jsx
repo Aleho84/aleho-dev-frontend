@@ -13,6 +13,7 @@ import Register from './components/main/Register';
 import Dashboard from './components/main/Dashboard';
 import Chatpanel from './components/main/Chatpanel';
 import Userpanel from './components/main/Userpanel';
+import DevicePanel from './components/main/DevicePanel';
 import Errorpage from './components/main/Errorpage';
 import Notfoundpage from './components/main/Notfoundpage';
 import LoadingSpinner from './components/child/LoadingSpinner';
@@ -79,6 +80,10 @@ function AppContent() {
         <Route
           path="/userpanel"
           element={isLoggedIn && isUserAdmin() ? <Userpanel /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/devicepanel"
+          element={isLoggedIn && isUserAdmin() ? <DevicePanel /> : <Navigate to="/" />}
         />
         <Route
           path="/chatpanel"

@@ -9,7 +9,7 @@ import { logoff } from '../../services/auth.js';
 
 // Components
 import { Button } from '@/components/ui/button';
-import { LogOut, MessageSquare, Users, Home } from 'lucide-react';
+import { LogOut, MessageSquare, Users, Home, Monitor } from 'lucide-react';
 
 export default function Sidebar({
   isMobileMenuOpen,
@@ -24,6 +24,10 @@ export default function Sidebar({
 
   const handleUserMngRedirect = () => {
     navigate('/userpanel');
+  };
+
+  const handleDeviceMngRedirect = () => {
+    navigate('/devicepanel');
   };
 
   const handleDashboardRedirect = () => {
@@ -73,8 +77,19 @@ export default function Sidebar({
         </Button>
         <Button
           variant="ghost"
-          className="w-full justify-start text-[#c9d1d9] hover:bg-[#30363d]"
-          onClick={handleChatRedirect}
+          className={`w-full justify-start text-[#c9d1d9] hover:bg-[#30363d] ${!userData?.admin ? 'opacity-50 cursor-not-allowed' : ''}`}
+          onClick={userData?.admin ? handleDeviceMngRedirect : null}
+          disabled={!userData?.admin}
+        >
+          {' '}
+          <Monitor className="mr-2 h-5 w-5" />
+          Dispositivos
+        </Button>
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-[#c9d1d9] hover:bg-[#30363d] opacity-50 cursor-not-allowed"
+          onClick={null}
+          disabled={true}
         >
           {' '}
           <MessageSquare className="mr-2 h-5 w-5" />

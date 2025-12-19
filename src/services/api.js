@@ -3,14 +3,6 @@ import { VITE__BACKEND_URL, VITE__RASPBERRY_API_URL } from '../config/apiConfig.
 import { logoff } from './auth.js';
 const VITE_DEBUG = import.meta.env.VITE_DEBUG || false;
 
-const dataServerStatusMock = [
-    { id: 1, name: 'Ubuntu Server', service: 'SSH', icon: 'Code', ip: '192.168.0.3', port: 22 },
-    { id: 2, name: 'Ubuntu Server', service: 'Mongo DB', icon: 'Database', ip: '192.168.0.3', port: 27017 },
-    { id: 3, name: 'Aleho-Bot', service: 'Node App', icon: 'Bot', ip: '192.168.0.3', port: 3000 },
-    { id: 4, name: 'Jetson Orin Nano', service: 'Jetson', icon: 'Gpu', ip: '192.168.0.91', port: 22 },
-    { id: 5, name: 'Raspberry 4', service: 'Raspberry', icon: 'Cherry', ip: '192.168.0.91', port: 22 },
-];
-
 export async function fetchWithLoading(url, options, setIsLoading = null) {
     if (setIsLoading) setIsLoading(true);
     try {
@@ -68,20 +60,81 @@ export async function getServerInfo() {
     }
 }
 
+export async function getDevices() {
+    try {
+        const userToken = localStorage.getItem('token');
+        const data = await fetchWithLoading(VITE__BACKEND_URL + '/devices', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${userToken}`,
+            },
+        });
+        return data;
+    } catch (error) {
+        console.error('Error fetching devices:', error);
+        throw error;
+    }
+}
+
+export async function createDevice(deviceData) {
+    const userToken = localStorage.getItem('token');
+    return await fetchWithLoading(VITE__BACKEND_URL + '/devices', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${userToken}`,
+        },
+        body: JSON.stringify(deviceData),
+    });
+}
+
+export async function updateDevice(id, deviceData) {
+    const userToken = localStorage.getItem('token');
+    return await fetchWithLoading(VITE__BACKEND_URL + `/devices/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${userToken}`,
+        },
+        body: JSON.stringify(deviceData),
+    });
+}
+
+export async function deleteDevice(id) {
+    const userToken = localStorage.getItem('token');
+    return await fetchWithLoading(VITE__BACKEND_URL + `/devices/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${userToken}`,
+        },
+    });
+}
+
 export async function getServerStatus() {
     try {
-        const statuses = await Promise.all(dataServerStatusMock.map(async (server) => {
+        let devices = [];
+        try {
+            devices = await getDevices();
+        } catch (e) {
+            console.warn("Could not fetch devices from DB, using empty list", e);
+        }
+
+        const statuses = await Promise.all(devices.map(async (server) => {
             try {
                 const status = await fetchServiceStatus(server.ip, server.port);
                 return {
                     ...server,
+                    id: server._id, // Ensure ID is mapped correctly
                     status: status,
                 };
             } catch (error) {
                 console.error(`Error al procesar el servidor ${server.name}:`, error);
                 return {
                     ...server,
-                    status: 'offline', // Manejo de error individual
+                    id: server._id,
+                    status: 'offline',
                 };
             }
         }));
