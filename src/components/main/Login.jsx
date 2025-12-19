@@ -91,6 +91,14 @@ export default function Login({ setIsLoggedIn }) {
             Iniciar sesión
           </button>
         </form>
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => navigate('/register')}
+            className="text-blue-400 hover:text-blue-300 text-sm"
+          >
+            ¿No tienes cuenta? Regístrate
+          </button>
+        </div>
       </div>
     </div>
   );

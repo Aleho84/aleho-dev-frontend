@@ -16,7 +16,18 @@ async function fetchWithLoading(url, options, setIsLoading = null) {
                 logoff();
                 throw new Error('Usuario o contraseña incorrecta');
             }
-            throw new Error(`HTTP error! status: ${response.status}`);
+
+            let errorMessage = `HTTP error! status: ${response.status}`;
+            try {
+                const errorData = await response.json();
+                if (errorData && errorData.message) {
+                    errorMessage = errorData.message;
+                }
+            } catch (e) {
+                // If parsing fails, stick with the generic message
+            }
+
+            throw new Error(errorMessage);
         }
         return await response.json();
     } finally {
@@ -42,6 +53,28 @@ export async function login(email, password) {
         return { token: data.token, user: data.user };
     } catch (error) {
         console.error('Error en la solicitud de inicio de sesión:', error);
+        throw error;
+    }
+}
+
+export async function register(name, email, password, image) {
+    try {
+        if (VITE_DEBUG === 'true') { console.log('Enviando solicitud de registro:', { name, email, password, image }) };
+
+        const data = await fetchWithLoading(VITE__BACKEND_URL + '/users/signin', {
+            method: 'POST',
+            headers: HEADER,
+            body: JSON.stringify({ name, email, password, image }),
+        });
+
+        if (VITE_DEBUG === 'true') { console.log('Respuesta de /users/signin:', data) };
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        return { token: data.token, user: data.user };
+    } catch (error) {
+        console.error('Error en la solicitud de registro:', error);
         throw error;
     }
 }

@@ -9,6 +9,7 @@ import {
 
 // Componentes
 import Login from './components/main/Login';
+import Register from './components/main/Register';
 import Dashboard from './components/main/Dashboard';
 import Chatpanel from './components/main/Chatpanel';
 import Userpanel from './components/main/Userpanel';
@@ -26,7 +27,8 @@ const VITE_DEBUG = import.meta.env.VITE_DEBUG || false;
 
 const isUserAdmin = () => {
   const user = getUserData();
-  return user?.account?.admin;
+  console.log(user?.admin);
+  return user?.admin;
 };
 
 function AppContent() {
@@ -61,6 +63,16 @@ function AppContent() {
               <Navigate to="/" />
             ) : (
               <Login setIsLoggedIn={setIsLoggedIn} />
+            )
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/" />
+            ) : (
+              <Register setIsLoggedIn={setIsLoggedIn} />
             )
           }
         />
